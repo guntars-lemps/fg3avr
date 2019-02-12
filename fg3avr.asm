@@ -1,8 +1,8 @@
 .DEVICE ATMEGA328P
-.NOLIST						                       ;Turn off to decrease size of list
+.NOLIST                                            ;Turn off to decrease size of list
 .INCLUDEPATH "/usr/share/avra"
 .INCLUDE "m328Pdef.inc"                            ;Include device file
-.LIST						                       ;Turn on
+.LIST                                              ;Turn on
 
 .dseg
 inbuf:  .byte 30   ;input buffer
@@ -12,18 +12,18 @@ loadbuf: .byte 21  ;temporary buffer to load eeprom
 
 .cseg
 .org 0
-	rjmp reset
+    rjmp reset
 
 .org URXCaddr
     rjmp usart_rxc        ;USART RX Complete handler
 
 reset:
-	cli                   ;disable global interrupts
+    cli                   ;disable global interrupts
 
-	ldi r16, HIGH(RAMEND) ;set stack pointer to RAM end
-	out SPH, r16
-	ldi r16, LOW(RAMEND)
-	out SPL, r16
+    ldi r16, HIGH(RAMEND) ;set stack pointer to RAM end
+    out SPH, r16
+    ldi r16, LOW(RAMEND)
+    out SPL, r16
 
     ldi r16, 51           ;baud rate 19200 at 16MHz
     sts UBRR0L, r16
@@ -238,9 +238,9 @@ main_tx_out_0:
 
     rjmp main_tx_out
 
-;------------------------------------
-;---  Frequencies generation loop ---
-;------------------------------------
+;--------------------------------
+;---  Frequencies generation  ---
+;--------------------------------
 
 main_freq_gen:
 
@@ -321,10 +321,94 @@ f2:
     cbr r24, (0b100 << 2)
     cbr r25, (0b100 << 2)
 
+; copy ON counters for frequencies without delay
 f3:
-    ;start at OFF / OFF / OFF state
-;----------------------------------------------------------------
-;OFF / OFF / OFF
+    tst r0
+    brne f4
+    tst r1
+    brne f4
+    ;F1 without delay
+    movw XH:XL, r3:r2 ;copy ON counter for F1
+f4:
+    tst r6
+    brne f5
+    tst r7
+    brne f5
+    ;F2 without delay
+    movw YH:YL, r9:r8 ;copy ON counter for F2
+f5:
+    tst r12
+    brne f4
+    tst r13
+    brne f4
+    ;F3 without delay
+    movw ZH:ZL, r15:r14 ;copy ON counter for F3
+
+; now jump to correct loop
+
+    tst r0
+    brne f_X_X_OFF
+    tst r1
+    brne f_X_X_OFF
+
+    tst r6
+    brne f_X_OFF_ON
+    tst r7
+    brne f_X_OFF_ON
+
+    tst r12
+    brne f_OFF_ON_ON
+    tst r13
+    brne f_OFF_ON_ON
+
+    rjmp f111_0
+
+f_OFF_ON_ON:
+
+    rjmp f011_0
+
+f_X_OFF_ON:
+
+    tst r12
+    brne f_OFF_OFF_ON
+    tst r13
+    brne f_OFF_OFF_ON
+
+    rjmp f101_0
+
+f_OFF_OFF_ON:
+
+    rjmp f001_0
+
+f_X_X_OFF:
+
+    tst r6
+    brne f_X_OFF_OFF
+    tst r7
+    brne f_X_OFF_OFF
+
+    tst r12
+    brne f_OFF_ON_OFF
+    tst r13
+    brne f_OFF_ON_OFF
+
+    rjmp f110_0
+
+f_OFF_ON_OFF:
+
+    rjmp f010_0
+
+f_X_OFF_OFF:
+
+    tst r12
+    brne f_OFF_OFF_OFF
+    tst r13
+    brne f_OFF_OFF_OFF
+
+    rjmp f100_0
+
+f_OFF_OFF_OFF:
+
 f000_0:
     sbiw XH:XL, 0x01     ; 2 clocks
     brne f000_1          ; 2 clocks if jump, 1 clock if dont jump
