@@ -962,7 +962,7 @@ crc16table:
 ;
 ; *** UART commands ***
 ;
-;  CRC algorithm used is CRC16/MODBUS, each TX/RX packet contains additional CRC bytes at and
+;  CRC algorithm used is CRC16/MODBUS, each TX/RX packet contains additional CRC bytes at end
 ;
 ;  Command 00 - PING PONG (00 40 BF)
 ;
