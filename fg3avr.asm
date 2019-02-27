@@ -338,12 +338,12 @@ f4:
     movw YH:YL, r9:r8 ;copy ON counter for F2
 f5:
     tst r12
-    brne f4
+    brne f6
     tst r13
-    brne f4
+    brne f6
     ;F3 without delay
     movw ZH:ZL, r15:r14 ;copy ON counter for F3
-
+f6:
 ; now jump to correct loop
 
     tst r0
