@@ -962,7 +962,7 @@ crc16table:
 ;
 ; *** UART commands ***
 ;
-;  CRC algorithm used is CRC16/MODBUS, each TX/RX packet contains additional CRC bytes at end
+;  CRC algorithm used is CRC16/MODBUS, each TX/RX packet contains additional CRC bytes at the end
 ;
 ;  Command 00 - PING PONG (00 40 BF)
 ;
@@ -982,7 +982,7 @@ crc16table:
 ;
 ;  02 - STORE TO EEPROM (02 81 3E), stores current frequencies to eeprom
 ;
-;  03 - LOAD FROM EEPROM (03 41 FF), loads frequencies from eeprom, this is done also at reset (startup)
+;  03 - LOAD FROM EEPROM (03 41 FF), loads frequencies from eeprom, this is done also at the reset (startup)
 ;
 ;  Possible responses:
 ;  00 + CRC16 = OK, COMMAND EXECUTED
