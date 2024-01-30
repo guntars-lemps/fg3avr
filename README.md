@@ -11,8 +11,8 @@ Fg3avr is 3 channels frequency generator for arduino which can be used for multi
 
 ### UART commands
 
-Each TX/RX packet contains additional CRC bytes at the end. The checksum algorithm used is CRC16/MODBUS.  
-All timings are 16 bit values (2 bytes). These timing values are measured in time units of 21/16000000 seconds, that is 1,3125 micro seconds per one unit.   
+Each command contains additional CRC bytes at the end. The checksum algorithm used is CRC16/MODBUS.  
+All timings are 16 bit values (2 bytes). These timing values are measured in time units of 21/16000000 seconds, that is 1.3125 micro seconds per one unit.   
 The UART speed is 19200 bps.   
 
 * Command 00 - PING PONG  
