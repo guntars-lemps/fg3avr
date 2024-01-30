@@ -1,4 +1,4 @@
-Fg3avr is 3 channels frequencies generator for arduino which can be used for multiple purposes. 
+Fg3avr is 3 channels frequency generator for arduino which can be used for multiple purposes. 
 
 ### Features
 
