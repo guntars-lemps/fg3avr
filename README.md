@@ -16,7 +16,7 @@ All timings are 16 bit values (2 bytes). These timing values are measured in tim
 The UART speed is 19200 bps.   
 
 * Command 00 - PING PONG  
-  Used to check if board is connected and is alive
+  Used to check if board is connected and alive
   
   |0x00|0x40|0xBF|  
   |---|---|---|
