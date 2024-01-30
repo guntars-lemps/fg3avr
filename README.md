@@ -1,6 +1,6 @@
 Fg3avr is a 3 independent frequencies generator for arduino which can be used for multiple purposes. 
 
-*Features*
+### Features
 
 * Frequencies outputs are digital, the pins used for output are D2,D3,D4
 * generator is driven by UART commads. The UART pins are default D0 and D1
@@ -9,7 +9,7 @@ Fg3avr is a 3 independent frequencies generator for arduino which can be used fo
 * Current frequencies can be stored in eeprom and loaded from eeprom.
 * At board power-up it checks if there are frequencies stored in eeprom. They are loaded from eeprom and generation starts automaticly, no need to connect and use UART
 
-*UART commands*
+### UART commands
 
 Each TX/RX packet contains additional CRC bytes at the end. The checksum algorithm used is CRC16/MODBUS. 
 All timings are 16 bit value (2 bytes). This value is the measured in time periods of 21/16000000 seconds, that is 1,3125 micro seconds.
@@ -21,6 +21,7 @@ The UART speed is 19200 bps.
 * Command 01 - SET FREQUENCIES
 if ON period equals to 0 then frequency is muted (off)
 Command conains 21 bytes. F1, F2, F3 - three frequencies
+|-|
 |01|
 DELAY F1 |H byte |L byte|
 ON period for F1 |H byte|L byte|
