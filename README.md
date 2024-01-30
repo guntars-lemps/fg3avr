@@ -28,41 +28,24 @@ The UART speed is 19200 bps.
 
 
 * Command 01 - SET FREQUENCIES  
-if ON period equals to 0 then frequency is muted (off)
-Command conains 21 bytes. F1, F2, F3 - three frequencies  
+  if ON period equals to 0 then frequency is muted (off)  
+  Command conains 21 bytes. F1, F2, F3 - three frequencies  
 
-|01|
-|---|
-DELAY F1 
+  |01|
+  |---|
+
+  DELAY for F1
 |H byte |L byte|
 |---|---|
-ON period for F1 
-|H byte|L byte|
-|---|---|
-OFF period for F1 
-|H byte|L byte|
-|---|---|
-DELAY F2 
-|H byte|L byte|
-|---|---|
-ON period for F2 
-|H byte|L byte|
-|---|---|
-OFF period for F2 
-|H byte|L byte|
-|---|---|
-DELAY F3 
-|H byte|L byte|
-|---|---|
-ON period for F3 
-|H byte|L byte|
-|---|---|
-OFF period for F3 
-|H byte|L byte|
-|---|---|
-CRC16 
-|H byte for CRC|L byte for CRC|
-|---|---|
+
+  ON period for F1  |H byte|L byte|
+  |---|---|
+
+  OFF period for F1  |H byte|L byte|
+  |---|---|
+
+  CRC16 |H byte for CRC|L byte for CRC|
+  |---|---|
 
 * Command 02 - STORE TO EEPROM
   Stores current frequencies to eeprom
