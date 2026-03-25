@@ -114,8 +114,7 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
   |0x04|0x83|0xBE|
   |---|---|---|
 
-* Possible responses from arduino:  
-  All respones are 3 byte long
+* Possible arduino responses:  
   
   OK, COMMAND EXECUTED
 <table>
@@ -139,11 +138,24 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
 </tr>
 </table>
 
-CAPABILITIES (Response to command 04)
-
-|0x04| 
-|0x00, 0x00, 0x00, 0x01| Min units 1
-|0x00, 0x00, 0xff, 0xff| Max units 65536
-|0x00, 0x00, 0x00, 0x15| Ticks per one unit 21
-|0x00, 0xf4, 0x24, 0x00| CPU ticks per one second 16000000
-|0x06, 0x17| CRC 16 bits
+  CAPABILITIES (Response to command 04)
+<table>
+<tr>
+    <td>Command</td><td>0x04</td>
+</tr>
+<tr>
+    <td>Min units 1</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x01</td>
+</tr>  
+<tr>
+    <td>Max units 65536</td><td>0x00</td><td>0x00</td><td>0xff</td><td>0xff</td>
+</tr>  
+<tr>
+    <td>Ticks per one unit 21</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x15</td>
+</tr>  
+<tr>
+    <td>CPU ticks per one second 16000000</td><td>0x00</td><td>0xf4</td><td>0x24</td><td>0x00</td>
+</tr>  
+<tr>
+    <td>CRC 16 bits</td><td>0x06</td><td>0x17</td>
+</tr>  
+</table>
