@@ -109,7 +109,7 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
   |0x03|0x41|0xFF|
   |---|---|---|
 
-* Command 04 - CHECK CAPABILITIES
+* Command 04 - CHECK CAPABILITIES 
   Request device capabilities (timing range, ticks per one unit, cpu ticks per second)
   |0x04|0x83|0xBE|
   |---|---|---|
@@ -118,16 +118,26 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
   All respones are 3 byte long
   
   OK, COMMAND EXECUTED
-  |0x00|CRC checksum 16 bits|
-  |---|---|---|
+<table>
+<tr>
+  <td>0x00</td><td>CRC checksum 16 bits</td>
+</tr>
+</table>
 
   BAD COMMAND (CRC ERROR)
-  |0x01|CRC checksum 16 bits|
-  |---|---|---|
+<table>
+<tr>
+  <td>0x01</td><td>CRC checksum 16 bits</td>
+</tr>
+</table>
+
 
   BAD DATA IN EEPROM (CRC ERROR)
-  |0x01|CRC checksum 16 bits|
-  |---|---|---|
+<table>
+<tr>
+  <td>0x02</td><td>CRC checksum 16 bits</td>
+</tr>
+</table>
 
 CAPABILITIES (Response to command 04)
 
