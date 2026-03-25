@@ -122,22 +122,22 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
 
   CAPABILITIES (Response to command 04)
   <table>
-<tr>
-    <td>Command</td><td>0x04</td>
-</tr>
-<tr>
-    <td>Min units 1</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x01</td>
-</tr>  
-<tr>
-    <td>Max units 65536</td><td>0x00</td><td>0x00</td><td>0xff</td><td>0xff</td>
-</tr>  
-<tr>
-    <td>Ticks per one unit 21</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x15</td>
-</tr>  
-<tr>
-    <td>CPU ticks per one second 16000000</td><td>0x00</td><td>0xf4</td><td>0x24</td><td>0x00</td>
-</tr>  
-<tr>
-    <td>CRC 16 bits</td><td>0x06</td><td>0x17</td>
-</tr>  
-</table>
+    <tr>
+      <td>Command</td><td>0x04</td>
+    </tr>
+    <tr>
+      <td>Min units 1</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x01</td>
+    </tr>  
+    <tr>
+      <td>Max units 65536</td><td>0x00</td><td>0x00</td><td>0xff</td><td>0xff</td>
+    </tr>  
+    <tr>
+      <td>Ticks per one unit 21</td><td>0x00</td><td>0x00</td><td>0x00</td><td>0x15</td>
+    </tr>  
+    <tr>
+      <td>CPU ticks per one second 16000000</td><td>0x00</td><td>0xf4</td><td>0x24</td><td>0x00</td>
+    </tr>  
+    <tr>
+      <td>CRC 16 bits</td><td>0x06</td><td>0x17</td>
+    </tr>  
+  </table>
