@@ -5,10 +5,10 @@
 .LIST                                              ;Turn on
 
 .dseg
-inbuf:  .byte 30   ;input buffer
+inbuf:  .byte 256  ;input buffer
 outbuf: .byte 256  ;output buffer
-workbuf: .byte 21  ;copy of input buffer for command 0x01 (Set frequencies)
-loadbuf: .byte 21  ;temporary buffer to load eeprom
+workbuf: .byte 39  ;copy of input buffer for command 0x01 (Set frequencies)
+loadbuf: .byte 39  ;temporary buffer to load eeprom
 
 .cseg
 .org 0
@@ -66,7 +66,7 @@ reset:
     clr r17
     ldi XH, HIGH(workbuf)
     ldi XL, LOW(workbuf)
-    ldi r16, 21
+    ldi r16, 39
 reset0:
     st X, r17
     adiw XH:XL, 0x01
@@ -88,7 +88,7 @@ main0:
     ldi YH, HIGH(inbuf)
     ldi YL, LOW(inbuf)
     in r16, GPIOR0          ;input buffer lenght
-    cpi r16, 3              ;lenght for commands 0x00, 0x02, 0x03
+    cpi r16, 3              ;lenght for commands 0x00, 0x02, 0x03, 0x04
     brne main0_1
 
     ld r18, Y               ;check if command is 0x01, then do nothing yet, still receiving
@@ -102,12 +102,16 @@ main0_2:
     call calc_crc16
     ldd r18, Y + 1
     cp r18, r17
-    brne main_send_bad
+    breq main0_2_cnt0
+    rjmp main_send_bad
+main0_2_cnt0:
     ldd r18, Y + 2
     cp r18, r16
-    brne main_send_bad
+    breq main0_2_cnt1
+    rjmp main_send_bad
 
-    ;data is ok, now check what command is received
+main0_2_cnt1:
+    ;data is ok, now check what command has been received
     ld r18, Y
     cpi r18, 0x00
     breq main_send_ok       ;if command is 0x00 (ping-pong) then just send OK response
@@ -122,41 +126,74 @@ main0_2:
 
 main0_0:
     cpi r18, 0x03
-    brne main_send_bad      ;if not equal to 0x03 then unknown command, send bad response
+    brne main0_4            ;if not equal to 0x03 then jummp to check for 0x04
 
     ;do "LOAD FROM EEPROM"
 
     call load_from_eeprom
     tst r16
-    brne main_send_bad_data ;if bad eeprom data then send "bad data" response
+    breq main0_0_cnt0
+    rjmp main_send_bad_data ;if bad eeprom data then send "bad data" response
+main0_0_cnt0:
     rjmp main_send_ok
 
-main0_1:
-    cpi r16, 21             ;test for command 0x01
-    brne main_tx_out
+main0_4:
 
+    cpi r18, 0x04
+    brne main_send_bad      ;if not equal to 0x04 then unknown command, send bad response
+    rjmp main_send_cap
+
+main0_1:
+    cpi r16, 39             ;test for command 0x01
+    breq main0_1_cnt0
+    rjmp main_tx_out
+
+main0_1_cnt0:
     ld r18, Y
     cpi r18, 0x01
     brne main_send_bad      ;unknown command, send bad response
 
     ;calculate and compare CRC16
-    ldi r16, 19             ;lenght is 19 bytes without CRC checksumm
+    ldi r16, 37             ;lenght is 37 bytes without CRC checksumm
     call calc_crc16
 
-    ldd r18, Y + 19
+    ldd r18, Y + 37
     cp r18, r17
     brne main_send_bad
-    ldd r18, Y + 20
+    ldd r18, Y + 38
     cp r18, r16
     brne main_send_bad
 
-    ;do "SETUP FREQUENCIES"
-    ;copy inbuf to workbuf
-    ;Y is at inbuf already
+    ; valid values are 0x00000001 - 0x0000ffff
+    ; all highest words must be checked for zero
+
+    ldi r16, 9        ; chek all 9 32bit values
+
+    movw XH:XL, YH:YL
+    adiw XH:XL, 0x01
+
+main0_test_zero:
+
+    ld r18, X+
+    tst r18
+    brne main_send_bad
+
+    ld r18, X+
+    tst r18
+    brne main_send_bad
+
+    adiw XH:XL, 0x02
+
+    dec r16
+    brne main0_test_zero
+
+    ; data for "SETUP FREQUENCIES" is ok
+    ; now copy inbuf to workbuf
+    ; Y is at inbuf already
 
     ldi XH, HIGH(workbuf)
     ldi XL, LOW(workbuf)
-    ldi r16, 21
+    ldi r16, 39
 main0_3:
     ld r17, Y
     st X, r17
@@ -206,6 +243,18 @@ main_send_bad_data:
 
     rjmp main_tx_out
 
+main_send_cap:             ;send capabilities response
+    ldi r17, 19
+    ldi ZH, HIGH(cap_resp * 2)
+    ldi ZL, LOW(cap_resp * 2)
+
+main_send_cap0:
+    lpm r16, Z+
+    call send_r16
+    dec r17
+    brne main_send_cap0
+    rjmp main_tx_out
+
 main_tx_out:
     ;check if something is in output buffer
     in r18, GPIOR1
@@ -250,26 +299,26 @@ main_freq_gen:
     ldi YL, LOW(workbuf)
 
     ;copy all 9 counters to registers for faster generation
-    ldd r1, Y + 1
-    ldd r0, Y + 2
-    ldd r3, Y + 3
-    ldd r2, Y + 4
-    ldd r5, Y + 5
-    ldd r4, Y + 6
+    ldd r1, Y + 3
+    ldd r0, Y + 4
+    ldd r3, Y + 7
+    ldd r2, Y + 8
+    ldd r5, Y + 11
+    ldd r4, Y + 12
 
-    ldd r7, Y + 7
-    ldd r6, Y + 8
-    ldd r9, Y + 9
-    ldd r8, Y + 10
-    ldd r11, Y + 11
-    ldd r10, Y + 12
+    ldd r7, Y + 15
+    ldd r6, Y + 16
+    ldd r9, Y + 19
+    ldd r8, Y + 20
+    ldd r11, Y + 23
+    ldd r10, Y + 24
 
-    ldd r13, Y + 13
-    ldd r12, Y + 14
-    ldd r15, Y + 15
-    ldd r14, Y + 16
-    ldd r17, Y + 17
-    ldd r16, Y + 18
+    ldd r13, Y + 27
+    ldd r12, Y + 28
+    ldd r15, Y + 31
+    ldd r14, Y + 32
+    ldd r17, Y + 35
+    ldd r16, Y + 36
 
     ;copy delay counters into X,Y,Z
     movw XH:XL, r1:r0
@@ -685,7 +734,7 @@ label0:
     ;increment and check GPIOR0
     in r16, GPIOR0
     inc r16
-    cpi r16, 30
+    cpi r16, 40
     in r17, SREG
     sbrs r17, SREG_C    ;skip clearing if flag C is set
     clr r16             ;clear GPIOR0 if >= 30
@@ -828,7 +877,7 @@ ew0:
 
     adiw XH:XL, 0x01
     inc r16
-    ldi r17, 21
+    ldi r17, 39
     cp r16, r17
     brne ew0
 
@@ -844,7 +893,7 @@ ew0:
 ;---------------
 
 load_from_eeprom:
-    ;sets r16 to 0 if crc is ok and copy 21 bytes from eeprom into workbuf
+    ;sets r16 to 0 if crc is ok and copy 39 bytes from eeprom into workbuf
     ;sets r16 to 1 if crc is bad
 
     ;load eeprom into loadbuf
@@ -873,21 +922,21 @@ er0:
     st X, r17
     adiw XH:XL, 0x01
     inc r16
-    ldi r17, 21
+    ldi r17, 39
     cp r16, r17
     brne er0
 
     ;check crc
-    ldi r16, 19
+    ldi r16, 37
     ldi YH, HIGH(loadbuf)
     ldi YL, LOW(loadbuf)
     call calc_crc16
 
-    ldd r18, Y + 20
+    ldd r18, Y + 38
     cp r18, r16
     ldi r16, 0x01        ;load 0x01 (bad data result) into r16
     brne er1
-    ldd r18, Y + 19
+    ldd r18, Y + 37
     cp r18, r17
     brne er1
 
@@ -898,7 +947,7 @@ er4:
     ldi XL, LOW(workbuf)
     ldi YH, HIGH(loadbuf)
     ldi YL, LOW(loadbuf)
-    ldi r16, 21
+    ldi r16, 39
 er2:
     ld r17, Y
     st X, r17
@@ -957,6 +1006,19 @@ crc16table:
 .dw 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641
 .dw 0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 
+.cseg
+
+; 04 Capabilities response
+;    byte  0     : Command 0x04
+;    bytes 1-4   : Minimal frequency value, uint32
+;    bytes 5-8   : Maximal frequency value, uint32
+;    bytes 9-12  : CPU ticks per 1 frequency unit, unit32
+;    bytes 13-16 : CPU ticks per 1 second, uint32
+;    bytes 17-18 : CRC16
+
+; 19 bytes
+cap_resp:
+    .db 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x15, 0x00, 0xf4, 0x24, 0x00, 0x06, 0x17
 
 ;----------------------------------
 ;
