@@ -37,7 +37,7 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
 
 <table>
 <tr>
-     <td>   </td>
+     <td>Command</td>
     <td>
         
 |0x01|
@@ -46,84 +46,54 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
 </tr>
 <tr>
     <td>DELAY for F1</td>
-    <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+    <td>      
+32 bit value
 </tr>
 <tr>
     <td>ON period for F1</td>
-    <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+    <td>       
+32 bit value
 </tr>
 <tr>
     <td>OFF period for F1</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 <tr>
     <td>DELAY for F2</td>
-    <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+    <td>       
+32 bit value
 </tr>
 <tr>
     <td>ON period for F2</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 <tr>
     <td>OFF period for F2</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 <tr>
     <td>DELAY for F3</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 <tr>
     <td>ON period for F3</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 <tr>
     <td>OFF period for F3</td>
     <td>
-        
-|32 bit value|
-|---|---|---|---|
-
+32 bit value
 </tr>
 
 <tr>
     <td>CRC16 Checksum</td>
-    <td>
-        
-|CRC checksum 16 bits|
-|---|---|
-
+    <td>    
+16 bits
 </tr>
 
 </table>
