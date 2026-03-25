@@ -35,70 +35,53 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
   if ON period equals to 0 then frequency is muted (off)  
   Command contains 39 bytes. F1, F2, F3 - three frequencies  
 
-<table>
-<tr>
-     <td>Command</td>
-    <td>
-        
-|0x01|
-|---|
-        
-</tr>
-<tr>
-    <td>DELAY for F1</td>
-    <td>      
-32 bit value
-</tr>
-<tr>
-    <td>ON period for F1</td>
-    <td>       
-32 bit value
-</tr>
-<tr>
-    <td>OFF period for F1</td>
-    <td>
-32 bit value
-</tr>
-<tr>
-    <td>DELAY for F2</td>
-    <td>       
-32 bit value
-</tr>
-<tr>
-    <td>ON period for F2</td>
-    <td>
-32 bit value
-</tr>
-<tr>
-    <td>OFF period for F2</td>
-    <td>
-32 bit value
-</tr>
-<tr>
-    <td>DELAY for F3</td>
-    <td>
-32 bit value
-</tr>
-<tr>
-    <td>ON period for F3</td>
-    <td>
-32 bit value
-</tr>
-<tr>
-    <td>OFF period for F3</td>
-    <td>
-32 bit value
-</tr>
-
-<tr>
-    <td>CRC16 Checksum</td>
-    <td>    
-16 bits
-</tr>
-
-</table>
+  <table>
+    <tr>
+      <td>Command</td>
+      <td>0x01</td>        
+    </tr>
+    <tr>
+      <td>DELAY for F1</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>ON period for F1</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>OFF period for F1</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>DELAY for F2</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>ON period for F2</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>OFF period for F2</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>DELAY for F3</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>ON period for F3</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>OFF period for F3</td>
+      <td>32 bit value</td>
+    </tr>
+    <tr>
+      <td>CRC16 Checksum</td>
+      <td>16 bits</td>
+    </tr>
+  </table>
    
-
 * Command 02 - STORE TO EEPROM  
   Stores current frequencies to eeprom
   |0x02|0x81|0x3E|
@@ -109,7 +92,7 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
   |0x03|0x41|0xFF|
   |---|---|---|
 
-* Command 04 - CHECK CAPABILITIES 
+* Command 04 - CHECK CAPABILITIES  
   Request device capabilities (timing range, ticks per one unit, cpu ticks per second)
   |0x04|0x83|0xBE|
   |---|---|---|
@@ -117,29 +100,28 @@ The UART speed is 19200 bps. All values use big endian byte ordering (highest by
 * Possible arduino responses:  
   
   OK, COMMAND EXECUTED
-<table>
+  <table>
 <tr>
   <td>0x00</td><td>CRC checksum 16 bits</td>
 </tr>
 </table>
 
   BAD COMMAND (CRC ERROR)
-<table>
+  <table>
 <tr>
   <td>0x01</td><td>CRC checksum 16 bits</td>
 </tr>
 </table>
 
-
   BAD DATA IN EEPROM (CRC ERROR)
-<table>
+  <table>
 <tr>
   <td>0x02</td><td>CRC checksum 16 bits</td>
 </tr>
 </table>
 
   CAPABILITIES (Response to command 04)
-<table>
+  <table>
 <tr>
     <td>Command</td><td>0x04</td>
 </tr>
