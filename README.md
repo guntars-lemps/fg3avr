@@ -1,19 +1,29 @@
-Fg3avr is 3 channels frequency generator for arduino (or any other board with ATMEGA328P) which can be used for multiple purposes. 
+Fg3avr is 3 channels frequency generator for arduino with ATMEGA328P mcu. It can be used for various purposes, for example, it can drive 3 phase motors or can be used for 3 phase AC generation
 
-### Features
+### Features ###
 
-* Frequencies outputs are digital, the pins used for output are D2, D3, D4
-* Generator is driven by UART commads. The UART pins are default D0 and D1
-* The frequencies are adjustable by startup delay, 'off' period and 'on' period
-* The generation can be turned on and off independently for each channel
-* Current frequencies can be stored in eeprom and loaded from eeprom.
-* At board power-up it checks if there are frequencies stored in eeprom. They are loaded from eeprom and generation starts automaticly, no need to connect and use UART
+* Frequency outputs are digital, the pins used for output are D2, D3, D4
+* Generator is driven by UART commads. UART pins used are default D0 and D1
+* Each frequency has startup delay, 'on' period and 'off' period adjustable parameters. Also generation can be turned off independently for each channel
+* Frequency parameters can be stored in eeprom and loaded from eeprom.
+* At board power-up it checks if there are frequencies stored in eeprom. They are loaded from eeprom and generation starts automatically, no need to connect and setup by UART
+
+### Capabilities ###
+
+This board has capabilities below
+
+* Min timing units 1
+* Max timing units 65535
+* CPU ticks per one time unit 21
+* CPU ticks per one second 16000000
+
+So this device has 1.3125 micro seconds resolution per one unit. Max frequency it is able to generate is 378 kHz
 
 ### UART commands
 
 Each command contains additional CRC bytes at the end. The checksum algorithm used is CRC16/MODBUS.  
-All timings are 16 bit values (2 bytes). These timing values are measured in time units of 21/16000000 seconds, that is 1.3125 micro seconds per one unit.   
-The UART speed is 19200 bps.   
+UART protocol now is upgraded to support 32 bit timing ranges, but this generator has limited timing resolution up to 16 bits. 
+The UART speed is 19200 bps. All values use big endian byte ordering (highest byte comes first)
 
 * Command 00 - PING PONG  
   Used to check if board is connected and alive
@@ -23,7 +33,7 @@ The UART speed is 19200 bps.
   
 * Command 01 - SET FREQUENCIES  
   if ON period equals to 0 then frequency is muted (off)  
-  Command contains 21 bytes. F1, F2, F3 - three frequencies  
+  Command contains 39 bytes. F1, F2, F3 - three frequencies  
 
 <table>
 <tr>
@@ -38,72 +48,72 @@ The UART speed is 19200 bps.
     <td>DELAY for F1</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>ON period for F1</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>OFF period for F1</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>DELAY for F2</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>ON period for F2</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>OFF period for F2</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>DELAY for F3</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>ON period for F3</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 <tr>
     <td>OFF period for F3</td>
     <td>
         
-|H byte |L byte|
-|---|---|
+|32 bit value|
+|---|---|---|---|
 
 </tr>
 
@@ -111,7 +121,7 @@ The UART speed is 19200 bps.
     <td>CRC16 Checksum</td>
     <td>
         
-|H byte of CRC|L byte of CRC|
+|CRC checksum 16 bits|
 |---|---|
 
 </tr>
@@ -129,17 +139,31 @@ The UART speed is 19200 bps.
   |0x03|0x41|0xFF|
   |---|---|---|
 
+* Command 04 - CHECK CAPABILITIES
+  Request device capabilities (timing range, ticks per one unit, cpu ticks per second)
+  |0x04|0x83|0xBE|
+  |---|---|---|
+
 * Possible responses from arduino:  
   All respones are 3 byte long
   
   OK, COMMAND EXECUTED
-  |0x00|CRC16 H byte|CRC16 L byte|
+  |0x00|CRC checksum 16 bits|
   |---|---|---|
 
   BAD COMMAND (CRC ERROR)
-  |0x01|CRC16 H byte|CRC16 L byte|
+  |0x01|CRC checksum 16 bits|
   |---|---|---|
 
   BAD DATA IN EEPROM (CRC ERROR)
-  |0x01|CRC16 H byte|CRC16 L byte|
+  |0x01|CRC checksum 16 bits|
   |---|---|---|
+
+CAPABILITIES (Response to command 04)
+
+|0x04| 
+|0x00, 0x00, 0x00, 0x01| Min units 1
+|0x00, 0x00, 0xff, 0xff| Max units 65536
+|0x00, 0x00, 0x00, 0x15| Ticks per one unit 21
+|0x00, 0xf4, 0x24, 0x00| CPU ticks per one second 16000000
+|0x06, 0x17| CRC 16 bits
